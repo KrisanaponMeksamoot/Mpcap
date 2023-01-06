@@ -36,7 +36,7 @@ public class PackageHistory extends DrawableHelper {
         scrolledLines += amount;
         if (scrolledLines<0) {
             scrolledLines = 0;
-        } else if (scrolledLines>Math.max(packets.size()-pageSize,0)) {
+        } else if (scrolledLines>Math.max(visibleMessages.size()-pageSize,0)) {
             toButtom();
         }
     }
@@ -44,7 +44,7 @@ public class PackageHistory extends DrawableHelper {
         scrolledLines = 0;
     }
     public void toButtom() {
-        scrolledLines = Math.max(packets.size()-pageSize,0);
+        scrolledLines = Math.max(visibleMessages.size()-pageSize,0);
     }
     public void render(MatrixStack matrices, int tickDelta) {
         int r;
@@ -113,7 +113,7 @@ public class PackageHistory extends DrawableHelper {
         }
         matrices.pop();
     }
-    public void addPacket(Packet<PacketListener> packet, int packetNum, int timestamp, boolean refresh) {
+    public void addPacket(Packet<PacketListener> packet, int packetNum, int timestamp) {
         Text message = Text.of(packet.toString());
         if (packetNum != 0) {
             this.removeMessage(packetNum);
@@ -121,20 +121,12 @@ public class PackageHistory extends DrawableHelper {
         int i = MathHelper.floor((double)this.getWidth() / this.getChatScale());
         List<OrderedText> list = ChatMessages.breakRenderedChatMessageLines(message, i, this.client.textRenderer);
         for (OrderedText orderedText : list) {
-            if (this.scrolledLines > 0) {
+            if (this.autoScroll) {
                 this.scroll(1);
             }
             this.visibleMessages.add(0, new ChatHudLine<OrderedText>(timestamp, orderedText, packetNum));
         }
-        while (this.visibleMessages.size() > 100) {
-            this.visibleMessages.remove(this.visibleMessages.size() - 1);
-        }
-        if (!refresh) {
-            this.messages.add(0, new ChatHudLine<Text>(timestamp, message, packetNum));
-            while (this.messages.size() > 100) {
-                this.messages.remove(this.messages.size() - 1);
-            }
-        }
+        this.messages.add(0, new ChatHudLine<Text>(timestamp, message, packetNum));
     }
     
     private double getChatScale() {
