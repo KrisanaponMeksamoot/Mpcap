@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.kris.mpcap.Mpcap;
-import net.kris.mpcap.PackageHistory;
+import net.kris.mpcap.PacketHistory;
 import net.kris.mpcap.PacketMessage;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketEncoder;
@@ -17,7 +17,7 @@ import net.minecraft.network.PacketEncoder;
 public class EncoderMixin {
     @Inject(method = "encode(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/Packet;Lio/netty/buffer/ByteBuf;)V", at = @At("TAIL"))
     public void encode(ChannelHandlerContext channelHandlerContext, Packet<?> packet, ByteBuf byteBuf, CallbackInfo info) {
-        PackageHistory ph = Mpcap.getInstance().packageHistory;
+        PacketHistory ph = Mpcap.getInstance().packageHistory;
         ph.addPacket(new PacketMessage(0, packet));
     }
 }

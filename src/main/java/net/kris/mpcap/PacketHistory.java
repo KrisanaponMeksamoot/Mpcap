@@ -20,7 +20,7 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
-public class PackageHistory extends DrawableHelper {
+public class PacketHistory extends DrawableHelper {
     private final List<PacketMessage> messages = Lists.newArrayList();
     private final List<ChatHudLine<OrderedText>> visibleMessages = Lists.newArrayList();
     private final Deque<PacketMessage> packetQueue = Queues.newArrayDeque();
@@ -29,7 +29,7 @@ public class PackageHistory extends DrawableHelper {
     int pageSize = 10;
     boolean autoScroll = true;
     private MinecraftClient client;
-    public PackageHistory(MinecraftClient client) {
+    public PacketHistory(MinecraftClient client) {
         this.client = client;
     }
     public void scroll(int amount) {

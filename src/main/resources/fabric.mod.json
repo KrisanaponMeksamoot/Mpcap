@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "Mpcap",
-  "description": "Minecraft Package Capture",
+  "description": "Minecraft Packet Capture",
   "authors": [
     "Krisanapon Meksamoot"
   ],
