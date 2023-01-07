@@ -37,7 +37,7 @@ public class Mpcap implements ModInitializer {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
-		this.pvsKey = new KeyBinding("key.openPacketView",GLFW.GLFW_KEY_F12,"key.categories.misc");
+		this.pvsKey = new KeyBinding("key.openPacketsView",GLFW.GLFW_KEY_F12,"key.categories.misc");
 		KeyBindingHelper.registerKeyBinding(pvsKey);
 
 		ClientTickEvents.END_CLIENT_TICK.register(this::onClientTick);

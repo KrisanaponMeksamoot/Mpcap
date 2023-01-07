@@ -1,16 +1,22 @@
 package net.kris.mpcap;
 
+import java.util.List;
+
 import org.lwjgl.glfw.GLFW;
+
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
 public class PacketsViewScreen extends Screen {
     private Mpcap mpcap;
 
-    protected PacketsViewScreen(Mpcap mpcap) {
-        super(Text.translatable("packet_view_screen.title"));
+    public PacketsViewScreen(Mpcap mpcap) {
+        super(Text.translatable("packets_view_screen.title"));
         this.mpcap = mpcap;
     }
     
@@ -45,5 +51,67 @@ public class PacketsViewScreen extends Screen {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+        this.mpcap.packageHistory.scroll((int)amount);
+        return true;
+    }
+
+    @Override
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        fill(matrices, 2, this.height - 14, this.width - 2, this.height - 2, this.client.options.getTextBackgroundColor(Integer.MIN_VALUE));
+        //renderPacketsMessage(matrices);
+        mpcap.packageHistory.render(matrices, (int)delta);
+        super.render(matrices, mouseX, mouseY, delta);
+    }
+
+    @Override
+    public boolean shouldPause() {
+        return false;
+    }
+
+    public void renderPacketsMessage(MatrixStack matrices) {
+        int i = (int)(255.0 * (this.client.options.getChtOpacity().getValue() * (double)0.9f + (double)0.1f));
+        int j = (int)(255.0 * this.client.options.getTextBackgroundOpacity().getValue());
+        int k = this.getPreviewWidth();
+        List<OrderedText> list = this.getPreviewText();
+        int l = this.getPreviewHeight(list);
+        RenderSystem.enableBlend();
+        matrices.push();
+        matrices.translate(this.getPreviewLeft(), this.getPreviewTop(l), 0.0);
+        fill(matrices, 0, 0, k, l, j << 24);
+        matrices.translate(2.0, 2.0, 0.0);
+        for (int m = 0; m < list.size(); ++m) {
+            OrderedText orderedText = list.get(m);
+            this.client.textRenderer.drawWithShadow(matrices, orderedText, 0.0f, (float)(m * this.textRenderer.fontHeight), i << 24 | 0xFFFFFF);
+        }
+        matrices.pop();
+        RenderSystem.disableBlend();
+    }
+
+    private int getPreviewWidth() {
+        return this.client.currentScreen.width - 4;
+    }
+
+    private int getPreviewHeight(List<OrderedText> lines) {
+        return Math.max(lines.size(), 1) * this.textRenderer.fontHeight + 4;
+    }
+
+    private int getPreviewBottom() {
+        return this.client.currentScreen.height - 15;
+    }
+
+    private int getPreviewTop(int previewHeight) {
+        return this.getPreviewBottom() - previewHeight;
+    }
+
+    private int getPreviewLeft() {
+        return 2;
+    }
+
+    private List<OrderedText> getPreviewText() {
+        return List.of(Text.of("preview text").asOrderedText());
     }
 }
