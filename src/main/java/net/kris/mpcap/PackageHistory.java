@@ -3,6 +3,8 @@ package net.kris.mpcap;
 import java.util.Deque;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -11,6 +13,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.hud.ChatHudLine;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ChatMessages;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.Packet;
@@ -56,23 +59,24 @@ public class PackageHistory extends DrawableHelper {
         if (j <= 0) {
             return;
         }
-        float f = (float)this.getChatScale();
-        int k = MathHelper.ceil((float)this.getWidth() / f);
+        boolean bl = this.isChatFocused();
+        float scale = (float)this.getChatScale();
+        int k = MathHelper.ceil((float)this.getWidth() / scale);
         matrices.push();
         matrices.translate(4.0, 8.0, 0.0);
-        matrices.scale(f, f, 1.0f);
+        matrices.scale(scale, scale, 1.0f);
         double d = this.client.options.getChtOpacity().getValue() * (double)0.9f + (double)0.1f;
-        double e = this.client.options.getTextBackgroundOpacity().getValue();
-        double g = this.client.options.getChatLineSpacing().getValue();
-        double h = 9.0 * (g + 1.0);
-        double l = -8.0 * (g + 1.0) + 4.0 * g;
+        double textBackgroundOpacity = this.client.options.getTextBackgroundOpacity().getValue();
+        double lineSpace = this.client.options.getChatLineSpacing().getValue();
+        double h = 9.0 * (lineSpace + 1.0);
+        double l = -8.0 * (lineSpace + 1.0) + 4.0 * lineSpace;
         int m = 0;
         for (n = 0; n + this.scrolledLines < this.visibleMessages.size() && n < i; ++n) {
             ChatHudLine<OrderedText> chatHudLine = this.visibleMessages.get(n + this.scrolledLines);
-            if (chatHudLine == null) continue;
+            if (chatHudLine == null || (o = tickDelta - chatHudLine.getCreationTick()) >= 200 && !bl) continue;
             double p = 1.0;
             q = (int)(255.0 * p * d);
-            r = (int)(255.0 * p * e);
+            r = (int)(255.0 * p * textBackgroundOpacity);
             ++m;
             if (q <= 3) continue;
             double t = (double)(-n) * h;
@@ -87,7 +91,7 @@ public class PackageHistory extends DrawableHelper {
         }
         if (!this.packetQueue.isEmpty()) {
             n = (int)(128.0 * d);
-            int u = (int)(255.0 * e);
+            int u = (int)(255.0 * textBackgroundOpacity);
             matrices.push();
             matrices.translate(0.0, 0.0, 50.0);
             ChatHud.fill(matrices, -2, 0, k + 4, 9, u << 24);
@@ -97,7 +101,7 @@ public class PackageHistory extends DrawableHelper {
             matrices.pop();
             RenderSystem.disableBlend();
         }
-        {
+        if (bl) {
             n = this.client.textRenderer.fontHeight;
             int u = j * n;
             o = m * n;
@@ -127,19 +131,40 @@ public class PackageHistory extends DrawableHelper {
             this.visibleMessages.add(0, new ChatHudLine<OrderedText>(timestamp, orderedText, packetNum));
         }
         this.messages.add(0, new ChatHudLine<Text>(timestamp, message, packetNum));
+        this.packets.add(packet);
     }
     
-    private double getChatScale() {
-        return 0;
-    }
-    private void removeMessage(int messageId) {
-    }
     public int getVisibleLineCount() {
         return this.getHeight() / 9;
     }
+
+    @Nullable
+    public PacketsViewScreen getChatScreen() {
+        Screen screen = this.client.currentScreen;
+        if (screen instanceof PacketsViewScreen) {
+            PacketsViewScreen pvScreen = (PacketsViewScreen)screen;
+            return pvScreen;
+        }
+        return null;
+    }
+
+    private boolean isChatFocused() {
+        return this.getChatScreen() != null;
+    }
+
+    private void removeMessage(int packetNum) {
+        this.visibleMessages.removeIf(message -> message.getId() == packetNum);
+        this.messages.removeIf(message -> message.getId() == packetNum);
+    }
+
     public int getWidth() {
         return ChatHud.getWidth(this.client.options.getChatWidth().getValue());
     }
+
+    public double getChatScale() {
+        return this.client.options.getChatScale().getValue();
+    }
+
     public int getHeight() {
         return ChatHud.getHeight(this.client.options.getChatHeightFocused().getValue() / (this.client.options.getChatLineSpacing().getValue() + 1.0));
     }
