@@ -42,7 +42,7 @@ public class Mpcap implements ModInitializer {
 
 		ClientTickEvents.END_CLIENT_TICK.register(this::onClientTick);
 		ClientLifecycleEvents.CLIENT_STARTED.register(this::onClientStarted);
-		LOGGER.info("Hello Fabric world!");
+		LOGGER.info("Mpcap initialized!");
 	}
 
 	private void onClientStarted(MinecraftClient client) {
