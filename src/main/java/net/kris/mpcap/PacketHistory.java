@@ -73,7 +73,7 @@ public class PacketHistory extends DrawableHelper {
         double top = -8.0 * (lineSpace + 1.0) + 4.0 * lineSpace;
         int m = 0;
         for (n = 0; n + this.scrolledLines < this.packetHudLines.size() && n < visibleLineCount; n++) {
-            if (this.scrolledLines <= n) continue;
+            if (this.scrolledLines >= n) continue;
             PacketHudLine packetHudLine = this.packetHudLines.get(this.packetHudLines.size()-n+this.scrolledLines);//n + this.scrolledLines);
             if (packetHudLine == null) continue;
             double opacity = 1.0;
