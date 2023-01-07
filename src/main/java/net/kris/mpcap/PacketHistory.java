@@ -68,7 +68,8 @@ public class PacketHistory extends DrawableHelper {
         double top = -8.0 * (lineSpace + 1.0) + 4.0 * lineSpace;
         int m = 0;
         for (n = 0; n + this.scrolledLines < this.packetHudLines.size() && n < visibleLineCount; n++) {
-            PacketHudLine packetHudLine = this.packetHudLines.get(n + this.scrolledLines);
+            if (this.scrolledLines - n > 0) continue;
+            PacketHudLine packetHudLine = this.packetHudLines.get(this.packetHudLines.size()-n+this.scrolledLines);//n + this.scrolledLines);
             if (packetHudLine == null) continue;
             double p = 1.0;
             itextOpacity = (int)(255.0 * p * textOpacity);
@@ -80,7 +81,7 @@ public class PacketHistory extends DrawableHelper {
             matrices.translate(0.0, 0.0, 50.0);
             fill(matrices, -4, (int)(cLineHeight - lineHeight), k + 4, (int)cLineHeight, itextBackgroundOpacity << 24);
             RenderSystem.enableBlend();
-            matrices.translate(0.0, 0.0, 50.0);
+            matrices.translate(0.0, 0.0, 51.0);
             this.client.textRenderer.drawWithShadow(matrices, packetHudLine.orderedText, 0.0f, (float)((int)(cLineHeight + top)), 0xFFFFFF + (itextOpacity << 24));
             RenderSystem.disableBlend();
             matrices.pop();
