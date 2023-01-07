@@ -18,16 +18,26 @@ public class Mpcap implements ModInitializer {
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LoggerFactory.getLogger("mpcap");
 
+	private static Mpcap instance;
+
 	protected KeyBinding pvsKey;
 
 	public PackageHistory packageHistory;
+
+	public Mpcap() {
+		instance = this;
+	}
+
+	public static Mpcap getInstance() {
+		return instance;
+	}
 
 	@Override
 	public void onInitialize() {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
-		pvsKey = new KeyBinding("key.openPacketView",GLFW.GLFW_KEY_F12,"key.categories.misc");
+		this.pvsKey = new KeyBinding("key.openPacketView",GLFW.GLFW_KEY_F12,"key.categories.misc");
 		KeyBindingHelper.registerKeyBinding(pvsKey);
 
 		ClientTickEvents.END_CLIENT_TICK.register(this::onClientTick);
@@ -36,7 +46,7 @@ public class Mpcap implements ModInitializer {
 	}
 
 	private void onClientStarted(MinecraftClient client) {
-		packageHistory = new PackageHistory(client);
+		this.packageHistory = new PackageHistory(client);
 	}
 
 	private void onClientTick(MinecraftClient client) {
