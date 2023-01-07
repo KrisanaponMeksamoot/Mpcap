@@ -31,19 +31,24 @@ public class PacketHistory extends DrawableHelper {
     public PacketHistory(MinecraftClient client) {
         this.client = client;
     }
-    public void scroll(int amount) {
-        scrolledLines += amount;
-        if (scrolledLines<0) {
-            scrolledLines = 0;
-        } else if (scrolledLines>Math.max(packetHudLines.size(),0)) {
-            toButtom();
+    public void scroll(int scroll) {
+        this.scrolledLines += scroll;
+        int i = this.packetHudLines.size();
+        if (this.scrolledLines > i - this.getVisibleLineCount()) {
+            this.scrolledLines = i - this.getVisibleLineCount();
+        }
+        if (this.scrolledLines <= 0) {
+            this.scrolledLines = 0;
+            this.autoScroll = true;
+        } else {
+            this.autoScroll = false;
         }
     }
     public void toTop() {
-        scrolledLines = 0;
+        scrolledLines = this.packetHudLines.size() - this.getVisibleLineCount();
     }
     public void toButtom() {
-        scrolledLines = Math.max(packetHudLines.size(),0);
+        scrolledLines = 0;
     }
     public void render(MatrixStack matrices, int tickDelta) {
         int itextBackgroundOpacity;
@@ -59,7 +64,7 @@ public class PacketHistory extends DrawableHelper {
         float scale = (float)this.getChatScale();
         int k = MathHelper.ceil((float)this.getWidth() / scale);
         matrices.push();
-        matrices.translate(4.0, 8.0, 0.0);
+        matrices.translate(4.0, 0.0, 0.0);
         matrices.scale(scale, scale, 1.0f);
         double textOpacity = this.client.options.getChtOpacity().getValue() * (double)0.9f + (double)0.1f;
         double textBackgroundOpacity = this.client.options.getTextBackgroundOpacity().getValue();
@@ -68,12 +73,12 @@ public class PacketHistory extends DrawableHelper {
         double top = -8.0 * (lineSpace + 1.0) + 4.0 * lineSpace;
         int m = 0;
         for (n = 0; n + this.scrolledLines < this.packetHudLines.size() && n < visibleLineCount; n++) {
-            if (this.scrolledLines - n > 0) continue;
+            if (this.scrolledLines <= n) continue;
             PacketHudLine packetHudLine = this.packetHudLines.get(this.packetHudLines.size()-n+this.scrolledLines);//n + this.scrolledLines);
             if (packetHudLine == null) continue;
-            double p = 1.0;
-            itextOpacity = (int)(255.0 * p * textOpacity);
-            itextBackgroundOpacity = (int)(255.0 * p * textBackgroundOpacity);
+            double opacity = 1.0;
+            itextOpacity = (int)(255.0 * opacity * textOpacity);
+            itextBackgroundOpacity = (int)(255.0 * opacity * textBackgroundOpacity);
             m++;
             if (itextOpacity <= 3) continue;
             double cLineHeight = n * lineHeight;
@@ -81,7 +86,7 @@ public class PacketHistory extends DrawableHelper {
             matrices.translate(0.0, 0.0, 50.0);
             fill(matrices, -4, (int)(cLineHeight - lineHeight), k + 4, (int)cLineHeight, itextBackgroundOpacity << 24);
             RenderSystem.enableBlend();
-            matrices.translate(0.0, 0.0, 51.0);
+            matrices.translate(0.0, 0.0, 1.0);
             this.client.textRenderer.drawWithShadow(matrices, packetHudLine.orderedText, 0.0f, (float)((int)(cLineHeight + top)), 0xFFFFFF + (itextOpacity << 24));
             RenderSystem.disableBlend();
             matrices.pop();
