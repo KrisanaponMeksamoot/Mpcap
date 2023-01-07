@@ -4,6 +4,8 @@
   "package": "net.kris.mpcap.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "EncoderMixin",
+    "DecoderMixin"
   ],
   "client": [
   ],

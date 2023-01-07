@@ -16,8 +16,6 @@ import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ChatMessages;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.network.Packet;
-import net.minecraft.network.listener.PacketListener;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
@@ -25,7 +23,7 @@ import net.minecraft.util.math.MathHelper;
 public class PackageHistory extends DrawableHelper {
     private final List<PacketMessage> messages = Lists.newArrayList();
     private final List<ChatHudLine<OrderedText>> visibleMessages = Lists.newArrayList();
-    private final Deque<Packet<PacketListener>> packetQueue = Queues.newArrayDeque();
+    private final Deque<PacketMessage> packetQueue = Queues.newArrayDeque();
     int scrolledLines = 0;
     int selected = -1;
     int pageSize = 10;
@@ -116,15 +114,16 @@ public class PackageHistory extends DrawableHelper {
         }
         matrices.pop();
     }
-    public void addPacket(PacketMessage packetMessage, int timestamp) {
+    public void addPacket(PacketMessage packetMessage) {
         int i = MathHelper.floor((double)this.getWidth() / this.getChatScale());
         List<OrderedText> list = ChatMessages.breakRenderedChatMessageLines(packetMessage.getText(), i, this.client.textRenderer);
         for (OrderedText orderedText : list) {
             if (this.autoScroll) {
                 this.scroll(1);
             }
-            this.visibleMessages.add(new ChatHudLine<OrderedText>(timestamp, orderedText, packetMessage.getNum()));
+            this.visibleMessages.add(new ChatHudLine<OrderedText>(packetMessage.getWhen(), orderedText, packetMessage.getNum()));
         }
+        packetMessage.setNum(this.messages.size());
         this.messages.add(packetMessage);
     }
     
