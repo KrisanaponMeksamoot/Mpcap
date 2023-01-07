@@ -121,7 +121,7 @@ public class PackageHistory extends DrawableHelper {
             if (this.autoScroll) {
                 this.scroll(1);
             }
-            this.visibleMessages.add(new ChatHudLine<OrderedText>(packetMessage.getWhen(), orderedText, packetMessage.getNum()));
+            this.visibleMessages.add(new ChatHudLine<OrderedText>(packetMessage.getNum(), orderedText, packetMessage.getNum()));
         }
         packetMessage.setNum(this.messages.size());
         this.messages.add(packetMessage);
