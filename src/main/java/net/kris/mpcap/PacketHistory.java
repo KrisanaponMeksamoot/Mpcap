@@ -50,7 +50,7 @@ public class PacketHistory extends DrawableHelper {
         int q;
         int o;
         int n;
-        int i = this.getVisibleLineCount();
+        int visibleLineCount = this.getVisibleLineCount();
         int j = this.visibleMessages.size();
         if (j <= 0) {
             return;
@@ -67,7 +67,7 @@ public class PacketHistory extends DrawableHelper {
         double lineHeight = 9.0 * (lineSpace + 1.0);
         double top = -8.0 * (lineSpace + 1.0) + 4.0 * lineSpace;
         int m = 0;
-        for (n = 0; n + this.scrolledLines < this.visibleMessages.size() && n < i; n++) {
+        for (n = 0; n + this.scrolledLines < this.visibleMessages.size() && n < visibleLineCount; n++) {
             PacketHudLine packetHudLine = this.visibleMessages.get(n + this.scrolledLines);
             if (packetHudLine == null) continue;
             double p = 1.0;
@@ -75,7 +75,7 @@ public class PacketHistory extends DrawableHelper {
             r = (int)(255.0 * p * textBackgroundOpacity);
             m++;
             if (q <= 3) continue;
-            double t = this.getHeight() - n * lineHeight;
+            double t = n * lineHeight;
             matrices.push();
             matrices.translate(0.0, 0.0, 50.0);
             fill(matrices, -4, (int)(t - lineHeight), 0 + k + 4, (int)t, r << 24);
@@ -117,7 +117,7 @@ public class PacketHistory extends DrawableHelper {
         int i = MathHelper.floor((double)this.getWidth() / this.getChatScale());
         List<OrderedText> list = ChatMessages.breakRenderedChatMessageLines(packetMessage.getText(), i, this.client.textRenderer);
         for (OrderedText orderedText : list) {
-            if (!this.autoScroll) {
+            if (this.autoScroll) {
                 this.scroll(1);
             }
             this.visibleMessages.add(new PacketHudLine(orderedText, packetMessage.getNum()));
