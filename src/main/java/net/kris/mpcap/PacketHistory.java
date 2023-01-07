@@ -12,7 +12,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.ChatHud;
-import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ChatMessages;
 import net.minecraft.client.util.math.MatrixStack;
@@ -22,7 +21,7 @@ import net.minecraft.util.math.MathHelper;
 
 public class PacketHistory extends DrawableHelper {
     private final List<PacketMessage> messages = Lists.newArrayList();
-    private final List<ChatHudLine<OrderedText>> visibleMessages = Lists.newArrayList();
+    private final List<PacketHudLine> visibleMessages = Lists.newArrayList();
     private final Deque<PacketMessage> packetQueue = Queues.newArrayDeque();
     int scrolledLines = 0;
     int selected = -1;
@@ -69,8 +68,8 @@ public class PacketHistory extends DrawableHelper {
         double l = -8.0 * (lineSpace + 1.0) + 4.0 * lineSpace;
         int m = 0;
         for (n = 0; n + this.scrolledLines < this.visibleMessages.size() && n < i; n++) {
-            ChatHudLine<OrderedText> chatHudLine = this.visibleMessages.get(n + this.scrolledLines);
-            if (chatHudLine == null || (o = tickDelta - chatHudLine.getCreationTick()) >= 200 && !bl) continue;
+            PacketHudLine packetHudLine = this.visibleMessages.get(n + this.scrolledLines);
+            if (packetHudLine == null) continue;
             double p = 1.0;
             q = (int)(255.0 * p * d);
             r = (int)(255.0 * p * textBackgroundOpacity);
@@ -82,7 +81,7 @@ public class PacketHistory extends DrawableHelper {
             fill(matrices, -4, (int)(t - h), 0 + k + 4, (int)t, r << 24);
             RenderSystem.enableBlend();
             matrices.translate(0.0, 0.0, 50.0);
-            this.client.textRenderer.drawWithShadow(matrices, chatHudLine.getText(), 0.0f, (float)((int)(t + l)), 0xFFFFFF + (q << 24));
+            this.client.textRenderer.drawWithShadow(matrices, packetHudLine.orderedText, 0.0f, (float)((int)(t + l)), 0xFFFFFF + (q << 24));
             RenderSystem.disableBlend();
             matrices.pop();
         }
@@ -121,7 +120,7 @@ public class PacketHistory extends DrawableHelper {
             if (this.autoScroll) {
                 this.scroll(1);
             }
-            this.visibleMessages.add(new ChatHudLine<OrderedText>(packetMessage.getNum(), orderedText, packetMessage.getNum()));
+            this.visibleMessages.add(new PacketHudLine(orderedText, packetMessage.getNum()));
         }
         packetMessage.setNum(this.messages.size());
         this.messages.add(packetMessage);
