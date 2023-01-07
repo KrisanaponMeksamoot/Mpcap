@@ -1,7 +1,6 @@
 package net.kris.mpcap.mixin;
 
 import net.kris.mpcap.Mpcap;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.TitleScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,7 +12,6 @@ public class ExampleMixin {
 	@Inject(at = @At("HEAD"), method = "init()V")
 	private void init(CallbackInfo info) {
 		
-		MinecraftClient.getInstance().setOverlay(null);
 		Mpcap.LOGGER.info("This line is printed by an example mod mixin!");
 	}
 }
