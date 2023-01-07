@@ -74,7 +74,10 @@ public class PacketsViewScreen extends Screen {
         // fill(matrices, 2, 2, this.width - 2, 14, this.client.options.getTextBackgroundColor(Integer.MIN_VALUE));
         //renderPacketsMessage(matrices);
         mpcap.packetHistory.render(matrices, (int)delta);
+        matrices.push();
+        matrices.translate(0.0, 0.0, 100.0);
         super.render(matrices, mouseX, mouseY, delta);
+        matrices.pop();
     }
 
     @Override

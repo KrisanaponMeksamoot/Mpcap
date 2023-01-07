@@ -20,8 +20,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
 public class PacketHistory extends DrawableHelper {
-    private final List<PacketMessage> messages = Lists.newArrayList();
-    private final List<PacketHudLine> visibleMessages = Lists.newArrayList();
+    private final List<PacketMessage> packetMessages = Lists.newArrayList();
+    private final List<PacketHudLine> packetHudLines = Lists.newArrayList();
     private final Deque<PacketMessage> packetQueue = Queues.newArrayDeque();
     int scrolledLines = 0;
     int selected = -1;
@@ -35,7 +35,7 @@ public class PacketHistory extends DrawableHelper {
         scrolledLines += amount;
         if (scrolledLines<0) {
             scrolledLines = 0;
-        } else if (scrolledLines>Math.max(visibleMessages.size(),0)) {
+        } else if (scrolledLines>Math.max(packetHudLines.size(),0)) {
             toButtom();
         }
     }
@@ -43,15 +43,15 @@ public class PacketHistory extends DrawableHelper {
         scrolledLines = 0;
     }
     public void toButtom() {
-        scrolledLines = Math.max(visibleMessages.size(),0);
+        scrolledLines = Math.max(packetHudLines.size(),0);
     }
     public void render(MatrixStack matrices, int tickDelta) {
-        int r;
-        int q;
+        int itextBackgroundOpacity;
+        int itextOpacity;
         int o;
         int n;
         int visibleLineCount = this.getVisibleLineCount();
-        int j = this.visibleMessages.size();
+        int j = this.packetHudLines.size();
         if (j <= 0) {
             return;
         }
@@ -61,32 +61,32 @@ public class PacketHistory extends DrawableHelper {
         matrices.push();
         matrices.translate(4.0, 8.0, 0.0);
         matrices.scale(scale, scale, 1.0f);
-        double d = this.client.options.getChtOpacity().getValue() * (double)0.9f + (double)0.1f;
+        double textOpacity = this.client.options.getChtOpacity().getValue() * (double)0.9f + (double)0.1f;
         double textBackgroundOpacity = this.client.options.getTextBackgroundOpacity().getValue();
         double lineSpace = this.client.options.getChatLineSpacing().getValue();
         double lineHeight = 9.0 * (lineSpace + 1.0);
         double top = -8.0 * (lineSpace + 1.0) + 4.0 * lineSpace;
         int m = 0;
-        for (n = 0; n + this.scrolledLines < this.visibleMessages.size() && n < visibleLineCount; n++) {
-            PacketHudLine packetHudLine = this.visibleMessages.get(n + this.scrolledLines);
+        for (n = 0; n + this.scrolledLines < this.packetHudLines.size() && n < visibleLineCount; n++) {
+            PacketHudLine packetHudLine = this.packetHudLines.get(n + this.scrolledLines);
             if (packetHudLine == null) continue;
             double p = 1.0;
-            q = (int)(255.0 * p * d);
-            r = (int)(255.0 * p * textBackgroundOpacity);
+            itextOpacity = (int)(255.0 * p * textOpacity);
+            itextBackgroundOpacity = (int)(255.0 * p * textBackgroundOpacity);
             m++;
-            if (q <= 3) continue;
-            double t = n * lineHeight;
+            if (itextOpacity <= 3) continue;
+            double cLineHeight = n * lineHeight;
             matrices.push();
             matrices.translate(0.0, 0.0, 50.0);
-            fill(matrices, -4, (int)(t - lineHeight), 0 + k + 4, (int)t, r << 24);
+            fill(matrices, -4, (int)(cLineHeight - lineHeight), k + 4, (int)cLineHeight, itextBackgroundOpacity << 24);
             RenderSystem.enableBlend();
             matrices.translate(0.0, 0.0, 50.0);
-            this.client.textRenderer.drawWithShadow(matrices, packetHudLine.orderedText, 0.0f, (float)((int)(t + top)), 0xFFFFFF + (q << 24));
+            this.client.textRenderer.drawWithShadow(matrices, packetHudLine.orderedText, 0.0f, (float)((int)(cLineHeight + top)), 0xFFFFFF + (itextOpacity << 24));
             RenderSystem.disableBlend();
             matrices.pop();
         }
         if (!this.packetQueue.isEmpty()) {
-            n = (int)(128.0 * d);
+            n = (int)(128.0 * textOpacity);
             int u = (int)(255.0 * textBackgroundOpacity);
             matrices.push();
             matrices.translate(0.0, 0.0, 50.0);
@@ -104,11 +104,11 @@ public class PacketHistory extends DrawableHelper {
             int v = this.scrolledLines * o / j;
             int w = o * o / u;
             if (u != o) {
-                q = v > 0 ? 170 : 96;
-                r = 0x3333AA;
+                itextOpacity = v > 0 ? 170 : 96;
+                itextBackgroundOpacity = 0x3333AA;
                 matrices.translate(-4.0, 0.0, 0.0);
-                fill(matrices, 0, -v, 2, -v - w, r + (q << 24));
-                fill(matrices, 2, -v, 1, -v - w, 0xCCCCCC + (q << 24));
+                fill(matrices, 0, -v, 2, -v - w, itextBackgroundOpacity + (itextOpacity << 24));
+                fill(matrices, 2, -v, 1, -v - w, 0xCCCCCC + (itextOpacity << 24));
             }
         }
         matrices.pop();
@@ -120,10 +120,10 @@ public class PacketHistory extends DrawableHelper {
             if (this.autoScroll) {
                 this.scroll(1);
             }
-            this.visibleMessages.add(new PacketHudLine(orderedText, packetMessage.getNum()));
+            this.packetHudLines.add(new PacketHudLine(orderedText, packetMessage.getNum()));
         }
-        packetMessage.setNum(this.messages.size());
-        this.messages.add(packetMessage);
+        packetMessage.setNum(this.packetMessages.size());
+        this.packetMessages.add(packetMessage);
     }
     
     public int getVisibleLineCount() {
@@ -156,8 +156,8 @@ public class PacketHistory extends DrawableHelper {
         return ChatHud.getHeight(this.client.options.getChatHeightFocused().getValue() / (this.client.options.getChatLineSpacing().getValue() + 1.0));
     }
     public void clear() {
-        messages.clear();
-        visibleMessages.clear();
+        packetMessages.clear();
+        packetHudLines.clear();
         packetQueue.clear();
     }
 }
