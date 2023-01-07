@@ -33,9 +33,9 @@ public class PacketHistory extends DrawableHelper {
     }
     public void scroll(int scroll) {
         this.scrolledLines += scroll;
-        int i = this.packetHudLines.size();
-        if (this.scrolledLines > i - this.getVisibleLineCount()) {
-            this.scrolledLines = i - this.getVisibleLineCount();
+        int i = Math.max(this.packetHudLines.size() - this.getVisibleLineCount(),0);
+        if (this.scrolledLines > i) {
+            this.scrolledLines = i;
         }
         if (this.scrolledLines <= 0) {
             this.scrolledLines = 0;
@@ -45,7 +45,7 @@ public class PacketHistory extends DrawableHelper {
         }
     }
     public void toTop() {
-        scrolledLines = this.packetHudLines.size() - this.getVisibleLineCount();
+        scrolledLines = Math.max(this.packetHudLines.size() - this.getVisibleLineCount(),0);
     }
     public void toButtom() {
         scrolledLines = 0;
