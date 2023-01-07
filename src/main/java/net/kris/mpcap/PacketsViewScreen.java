@@ -35,19 +35,19 @@ public class PacketsViewScreen extends Screen {
             return true;
         }
         if (keyCode == GLFW.GLFW_KEY_UP) {
-            this.mpcap.packageHistory.scroll(1);
+            this.mpcap.packetHistory.scroll(1);
             return true;
         }
         if (keyCode == GLFW.GLFW_KEY_DOWN) {
-            this.mpcap.packageHistory.scroll(-1);
+            this.mpcap.packetHistory.scroll(-1);
             return true;
         }
         if (keyCode == GLFW.GLFW_KEY_PAGE_UP) {
-            this.mpcap.packageHistory.toTop();
+            this.mpcap.packetHistory.toTop();
             return true;
         }
         if (keyCode == GLFW.GLFW_KEY_PAGE_DOWN) {
-            this.mpcap.packageHistory.toButtom();
+            this.mpcap.packetHistory.toButtom();
             return true;
         }
         return false;
@@ -55,7 +55,7 @@ public class PacketsViewScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        this.mpcap.packageHistory.scroll((int)amount);
+        this.mpcap.packetHistory.scroll((int)amount);
         return true;
     }
 
@@ -63,7 +63,7 @@ public class PacketsViewScreen extends Screen {
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         fill(matrices, 2, this.height - 14, this.width - 2, this.height - 2, this.client.options.getTextBackgroundColor(Integer.MIN_VALUE));
         //renderPacketsMessage(matrices);
-        mpcap.packageHistory.render(matrices, (int)delta);
+        mpcap.packetHistory.render(matrices, (int)delta);
         super.render(matrices, mouseX, mouseY, delta);
     }
 

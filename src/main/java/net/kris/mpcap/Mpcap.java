@@ -22,7 +22,7 @@ public class Mpcap implements ModInitializer {
 
 	protected KeyBinding pvsKey;
 
-	public PacketHistory packageHistory;
+	public PacketHistory packetHistory;
 
 	public Mpcap() {
 		instance = this;
@@ -46,7 +46,7 @@ public class Mpcap implements ModInitializer {
 	}
 
 	private void onClientStarted(MinecraftClient client) {
-		this.packageHistory = new PacketHistory(client);
+		this.packetHistory = new PacketHistory(client);
 	}
 
 	private void onClientTick(MinecraftClient client) {

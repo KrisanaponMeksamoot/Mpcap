@@ -17,7 +17,7 @@ import net.minecraft.network.PacketEncoder;
 public class EncoderMixin {
     @Inject(method = "encode(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/Packet;Lio/netty/buffer/ByteBuf;)V", at = @At("TAIL"))
     public void encode(ChannelHandlerContext channelHandlerContext, Packet<?> packet, ByteBuf byteBuf, CallbackInfo info) {
-        PacketHistory ph = Mpcap.getInstance().packageHistory;
+        PacketHistory ph = Mpcap.getInstance().packetHistory;
         ph.addPacket(new PacketMessage(0, packet));
     }
 }

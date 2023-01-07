@@ -19,7 +19,7 @@ import net.minecraft.network.Packet;
 public class DecoderMixin {
     @Inject(method = "decode(Lio/netty/channel/ChannelHandlerContext;Lio/netty/buffer/ByteBuf;Ljava/util/List;)V", at = @At("TAIL"))
     public void decode(ChannelHandlerContext ctx, ByteBuf buf, List<Object> objects, CallbackInfo info) {
-        PacketHistory ph = Mpcap.getInstance().packageHistory;
+        PacketHistory ph = Mpcap.getInstance().packetHistory;
         ph.addPacket(new PacketMessage(0, (Packet<?>) objects.get(objects.size()-1)));
     }
 }

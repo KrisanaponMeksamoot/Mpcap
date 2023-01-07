@@ -1,8 +1,10 @@
 package net.kris.mpcap;
 
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 import net.minecraft.network.Packet;
 import net.minecraft.text.Text;
@@ -12,10 +14,9 @@ public class PacketMessage {
     private Packet<?> packet;
     private int num;
     public PacketMessage(Packet<?> packet) {
-        this.when = System.currentTimeMillis();
-        this.packet = packet;
+        this(System.currentTimeMillis(),packet);
     }
-    public PacketMessage(int when, Packet<?> packet) {
+    public PacketMessage(long when, Packet<?> packet) {
         this.when = when;
         this.packet = packet;
     }
@@ -36,6 +37,6 @@ public class PacketMessage {
     }
     @Override
     public String toString() {
-        return String.format("[%s] %s",DateTimeFormatter.ISO_LOCAL_TIME.format(new Date(when).toInstant()),packet.toString());
+        return String.format("[%s] %s",DateTimeFormatter.ISO_LOCAL_TIME.format(ZonedDateTime.ofInstant(Instant.ofEpochMilli(when),ZoneId.systemDefault())),packet.toString());
     }
 }
