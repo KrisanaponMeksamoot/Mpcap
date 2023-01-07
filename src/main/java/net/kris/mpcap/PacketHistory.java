@@ -64,8 +64,8 @@ public class PacketHistory extends DrawableHelper {
         double d = this.client.options.getChtOpacity().getValue() * (double)0.9f + (double)0.1f;
         double textBackgroundOpacity = this.client.options.getTextBackgroundOpacity().getValue();
         double lineSpace = this.client.options.getChatLineSpacing().getValue();
-        double h = 9.0 * (lineSpace + 1.0);
-        double l = -8.0 * (lineSpace + 1.0) + 4.0 * lineSpace;
+        double lineHeight = 9.0 * (lineSpace + 1.0);
+        double top = -8.0 * (lineSpace + 1.0) + 4.0 * lineSpace;
         int m = 0;
         for (n = 0; n + this.scrolledLines < this.visibleMessages.size() && n < i; n++) {
             PacketHudLine packetHudLine = this.visibleMessages.get(n + this.scrolledLines);
@@ -73,15 +73,15 @@ public class PacketHistory extends DrawableHelper {
             double p = 1.0;
             q = (int)(255.0 * p * d);
             r = (int)(255.0 * p * textBackgroundOpacity);
-            ++m;
+            m++;
             if (q <= 3) continue;
-            double t = (double)(-n) * h;
+            double t = this.getHeight() - n * lineHeight;
             matrices.push();
             matrices.translate(0.0, 0.0, 50.0);
-            fill(matrices, -4, (int)(t - h), 0 + k + 4, (int)t, r << 24);
+            fill(matrices, -4, (int)(t - lineHeight), 0 + k + 4, (int)t, r << 24);
             RenderSystem.enableBlend();
             matrices.translate(0.0, 0.0, 50.0);
-            this.client.textRenderer.drawWithShadow(matrices, packetHudLine.orderedText, 0.0f, (float)((int)(t + l)), 0xFFFFFF + (q << 24));
+            this.client.textRenderer.drawWithShadow(matrices, packetHudLine.orderedText, 0.0f, (float)((int)(t + top)), 0xFFFFFF + (q << 24));
             RenderSystem.disableBlend();
             matrices.pop();
         }
@@ -117,7 +117,7 @@ public class PacketHistory extends DrawableHelper {
         int i = MathHelper.floor((double)this.getWidth() / this.getChatScale());
         List<OrderedText> list = ChatMessages.breakRenderedChatMessageLines(packetMessage.getText(), i, this.client.textRenderer);
         for (OrderedText orderedText : list) {
-            if (this.autoScroll) {
+            if (!this.autoScroll) {
                 this.scroll(1);
             }
             this.visibleMessages.add(new PacketHudLine(orderedText, packetMessage.getNum()));
@@ -154,5 +154,10 @@ public class PacketHistory extends DrawableHelper {
 
     public int getHeight() {
         return ChatHud.getHeight(this.client.options.getChatHeightFocused().getValue() / (this.client.options.getChatLineSpacing().getValue() + 1.0));
+    }
+    public void clear() {
+        messages.clear();
+        visibleMessages.clear();
+        packetQueue.clear();
     }
 }

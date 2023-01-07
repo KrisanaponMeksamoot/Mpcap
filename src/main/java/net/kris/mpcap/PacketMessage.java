@@ -6,10 +6,13 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.google.gson.Gson;
+
 import net.minecraft.network.Packet;
 import net.minecraft.text.Text;
 
 public class PacketMessage {
+    private static final Gson gson = new Gson();
     private long when;
     private Packet<?> packet;
     private int num;
@@ -37,6 +40,6 @@ public class PacketMessage {
     }
     @Override
     public String toString() {
-        return String.format("[%s] %s",DateTimeFormatter.ISO_LOCAL_TIME.format(ZonedDateTime.ofInstant(Instant.ofEpochMilli(when),ZoneId.systemDefault())),packet.toString());
+        return String.format("%d [%s] %s: %s",this.num,DateTimeFormatter.ISO_LOCAL_TIME.format(ZonedDateTime.ofInstant(Instant.ofEpochMilli(when),ZoneId.systemDefault())),packet.getClass().getName(),gson.toJson(packet));
     }
 }

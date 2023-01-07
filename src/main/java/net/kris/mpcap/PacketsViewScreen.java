@@ -8,16 +8,26 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
 public class PacketsViewScreen extends Screen {
+    public static final Text CLEAR = Text.translatable("gui.mpcap.clear");
+
     private Mpcap mpcap;
 
     public PacketsViewScreen(Mpcap mpcap) {
         super(Text.translatable("packets_view_screen.title"));
         this.mpcap = mpcap;
+    }
+
+    @Override
+    protected void init() {
+        this.addDrawableChild(new ButtonWidget(2, 2, 200, 20, CLEAR, button -> {
+            this.mpcap.packetHistory.clear();
+        }));
     }
     
     @Override
@@ -61,7 +71,7 @@ public class PacketsViewScreen extends Screen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        fill(matrices, 2, this.height - 14, this.width - 2, this.height - 2, this.client.options.getTextBackgroundColor(Integer.MIN_VALUE));
+        // fill(matrices, 2, 2, this.width - 2, 14, this.client.options.getTextBackgroundColor(Integer.MIN_VALUE));
         //renderPacketsMessage(matrices);
         mpcap.packetHistory.render(matrices, (int)delta);
         super.render(matrices, mouseX, mouseY, delta);
