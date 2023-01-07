@@ -81,7 +81,7 @@ public class PacketHistory extends DrawableHelper {
             itextBackgroundOpacity = (int)(255.0 * opacity * textBackgroundOpacity);
             m++;
             if (itextOpacity <= 3) continue;
-            double cLineHeight = n * lineHeight;
+            double cLineHeight = this.getHeight() - n * lineHeight;
             matrices.push();
             matrices.translate(0.0, 0.0, 50.0);
             fill(matrices, -4, (int)(cLineHeight - lineHeight), k + 4, (int)cLineHeight, itextBackgroundOpacity << 24);
