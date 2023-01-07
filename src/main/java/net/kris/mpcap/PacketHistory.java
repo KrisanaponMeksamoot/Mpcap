@@ -66,15 +66,15 @@ public class PacketHistory extends DrawableHelper {
         matrices.push();
         matrices.translate(4.0, 0.0, 0.0);
         matrices.scale(scale, scale, 1.0f);
-        double textOpacity = this.client.options.getChtOpacity().getValue() * (double)0.9f + (double)0.1f;
+        double textOpacity = this.client.options.getChtOpacity().getValue() * 0.9 + 0.1;
         double textBackgroundOpacity = this.client.options.getTextBackgroundOpacity().getValue();
         double lineSpace = this.client.options.getChatLineSpacing().getValue();
         double lineHeight = 9.0 * (lineSpace + 1.0);
         double top = -8.0 * (lineSpace + 1.0) + 4.0 * lineSpace;
         int m = 0;
         for (n = 0; n + this.scrolledLines < this.packetHudLines.size() && n < visibleLineCount; n++) {
-            if (this.scrolledLines >= n) continue;
-            PacketHudLine packetHudLine = this.packetHudLines.get(this.packetHudLines.size()-n+this.scrolledLines);//n + this.scrolledLines);
+            if (-this.scrolledLines >= n) continue;
+            PacketHudLine packetHudLine = this.packetHudLines.get(this.packetHudLines.size()-n-this.scrolledLines);//n + this.scrolledLines);
             if (packetHudLine == null) continue;
             double opacity = 1.0;
             itextOpacity = (int)(255.0 * opacity * textOpacity);
@@ -120,6 +120,7 @@ public class PacketHistory extends DrawableHelper {
         matrices.pop();
     }
     public void addPacket(PacketMessage packetMessage) {
+        packetMessage.setNum(this.packetMessages.size());
         int i = MathHelper.floor((double)this.getWidth() / this.getChatScale());
         List<OrderedText> list = ChatMessages.breakRenderedChatMessageLines(packetMessage.getText(), i, this.client.textRenderer);
         for (OrderedText orderedText : list) {
@@ -128,7 +129,6 @@ public class PacketHistory extends DrawableHelper {
             }
             this.packetHudLines.add(new PacketHudLine(orderedText, packetMessage.getNum()));
         }
-        packetMessage.setNum(this.packetMessages.size());
         this.packetMessages.add(packetMessage);
     }
     
