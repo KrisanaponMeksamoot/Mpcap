@@ -1,5 +1,7 @@
 {
     "key.openPacketsView":"Open Packets View",
     "packets_view_screen.title":"Packets View",
-    "gui.mpcap.clear":"Clear History"
+    "gui.mpcap.clear":"Clear History",
+    "gui.mpcap.enable_record":"Enable Record",
+    "gui.mpcap.disable_record":"Disable Record"
 }

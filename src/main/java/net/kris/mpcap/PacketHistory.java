@@ -27,6 +27,7 @@ public class PacketHistory extends DrawableHelper {
     int selected = -1;
     int pageSize = 10;
     boolean autoScroll = true;
+    boolean recording = false;
     private MinecraftClient client;
     public PacketHistory(MinecraftClient client) {
         this.client = client;
@@ -120,6 +121,8 @@ public class PacketHistory extends DrawableHelper {
         matrices.pop();
     }
     public void addPacket(PacketMessage packetMessage) {
+        if (!recording)
+            return;
         packetMessage.setNum(this.packetMessages.size());
         int i = MathHelper.floor((double)this.getWidth() / this.getChatScale());
         List<OrderedText> list = ChatMessages.breakRenderedChatMessageLines(packetMessage.getText(), i, this.client.textRenderer);

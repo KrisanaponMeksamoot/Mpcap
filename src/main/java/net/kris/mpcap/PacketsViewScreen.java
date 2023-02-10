@@ -15,6 +15,8 @@ import net.minecraft.text.Text;
 
 public class PacketsViewScreen extends Screen {
     public static final Text CLEAR = Text.translatable("gui.mpcap.clear");
+    public static final Text ENABLE_RECORD = Text.translatable("gui.mpcap.enable_record");
+    public static final Text DISABLE_RECORD = Text.translatable("gui.mpcap.disable_record");
 
     private Mpcap mpcap;
 
@@ -28,6 +30,11 @@ public class PacketsViewScreen extends Screen {
         this.addDrawableChild(new ButtonWidget(2, 2, 200, 20, CLEAR, button -> {
             this.mpcap.packetHistory.clear();
         }));
+        ButtonWidget record_toggle = new ButtonWidget(202, 2, 200, 20, this.mpcap.packetHistory.recording?DISABLE_RECORD:ENABLE_RECORD, button -> {
+            this.mpcap.packetHistory.recording = ! this.mpcap.packetHistory.recording;
+            button.setMessage(this.mpcap.packetHistory.recording?DISABLE_RECORD:ENABLE_RECORD);
+        });
+        this.addDrawableChild(record_toggle);
     }
     
     @Override
