@@ -37,6 +37,6 @@ public class PacketMessage {
     }
     @Override
     public String toString() {
-        return String.format("%d [%s] %s: %s",this.num,DateTimeFormatter.ISO_LOCAL_TIME.format(ZonedDateTime.ofInstant(Instant.ofEpochMilli(when),ZoneId.systemDefault())),PacketViewHelper.stringView(packet));
+        return String.format("%d [%s] %s",this.num,DateTimeFormatter.ISO_LOCAL_TIME.format(ZonedDateTime.ofInstant(Instant.ofEpochMilli(when),ZoneId.systemDefault())),PacketViewHelper.stringView(packet));
     }
 }
