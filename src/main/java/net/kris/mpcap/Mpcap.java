@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.kris.mpcap.event.ConnectEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 
@@ -51,6 +52,8 @@ public class Mpcap implements ModInitializer, ClientModInitializer {
 
 		ClientTickEvents.END_CLIENT_TICK.register(this::onClientTick);
 		ClientLifecycleEvents.CLIENT_STARTED.register(this::onClientStarted);
+
+		ConnectEvent.register(this::onClientConnected);
 	}
 
 	private void onClientStarted(MinecraftClient client) {
@@ -61,5 +64,10 @@ public class Mpcap implements ModInitializer, ClientModInitializer {
 		while (pvsKey.wasPressed()) {
 			client.setScreen(new PacketsViewScreen(this));
 		}
+	}
+
+	private void onClientConnected(ClientConnectionHandler handler) {
+		handler.addSendHandler((packet)->packetHistory.addPacket(new PacketMessage(0, packet)));
+		handler.addReceiveHandler((packet)->packetHistory.addPacket(new PacketMessage(0, packet)));
 	}
 }

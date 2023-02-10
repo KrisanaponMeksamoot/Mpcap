@@ -1,18 +1,15 @@
 package net.kris.mpcap;
 
-
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.google.gson.Gson;
-
+import net.kris.mpcap.util.PacketViewHelper;
 import net.minecraft.network.Packet;
 import net.minecraft.text.Text;
 
 public class PacketMessage {
-    private static final Gson gson = new Gson();
     private long when;
     private Packet<?> packet;
     private int num;
@@ -40,6 +37,6 @@ public class PacketMessage {
     }
     @Override
     public String toString() {
-        return String.format("%d [%s] %s: %s",this.num,DateTimeFormatter.ISO_LOCAL_TIME.format(ZonedDateTime.ofInstant(Instant.ofEpochMilli(when),ZoneId.systemDefault())),packet.getClass().getName(),gson.toJson(packet));
+        return String.format("%d [%s] %s: %s",this.num,DateTimeFormatter.ISO_LOCAL_TIME.format(ZonedDateTime.ofInstant(Instant.ofEpochMilli(when),ZoneId.systemDefault())),PacketViewHelper.stringView(packet));
     }
 }
