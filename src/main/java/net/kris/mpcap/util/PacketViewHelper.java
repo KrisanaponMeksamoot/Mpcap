@@ -33,13 +33,13 @@ public class PacketViewHelper {
     protected static HashSet<Class<?>> rawStringShowableClasses = Sets.newHashSet(BlockPos.class,ChunkPos.class,ChunkSectionPos.class,GlobalPos.class,UUID.class,NbtCompound.class,ItemStack.class,BlockHitResult.class);
     protected static HashSet<Class<?>> stringifiableClasses = Sets.newHashSet(String.class,Identifier.class,RegistryKey.class,Date.class,BitSet.class,Optional.class);
     protected static MappingResolver mappingResolver = FabricLoader.getInstance().getMappingResolver();
-    protected static String namespace = mappingResolver.getCurrentRuntimeNamespace();
+    protected static String namespace = mappingResolver.getNamespaces().contains("named")?"named":mappingResolver.getCurrentRuntimeNamespace();
     public static String stringView(Packet<?> packet) {
         Class<?> clazz = packet.getClass();
         String className = clazz.getName();
         String out = mappingResolver.mapClassName(namespace, className) + ": {";
         boolean hasPrev = false;
-        for (Field field : clazz.getFields()) {
+        for (Field field : clazz.getDeclaredFields()) {
             if (Modifier.isStatic(field.getModifiers()))
                 continue;
             if (!field.trySetAccessible())
@@ -61,9 +61,9 @@ public class PacketViewHelper {
                     } else if (ptype == Character.TYPE) {
                         value = Character.toString(field.getChar(packet));
                     } else if (ptype == Integer.TYPE) {
-                        value = Integer.toString(field.getShort(packet));
+                        value = Integer.toString(field.getInt(packet));
                     } else if (ptype == Long.TYPE) {
-                        value = field.getShort(packet)+"L";
+                        value = field.getLong(packet)+"L";
                     }
                 } else {
                     Object fieldValue = field.get(packet);

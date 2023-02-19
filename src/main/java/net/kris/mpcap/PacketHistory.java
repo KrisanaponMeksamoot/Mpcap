@@ -67,7 +67,7 @@ public class PacketHistory extends DrawableHelper {
         matrices.push();
         matrices.translate(4.0, this.getHeight() - 48, 0.0);
         matrices.scale(scale, scale, 1.0f);
-        double textOpacity = this.client.options.getChtOpacity().getValue() * 0.9 + 0.1;
+        double textOpacity = this.client.options.getChatOpacity().getValue() * 0.9 + 0.1;
         double textBackgroundOpacity = this.client.options.getTextBackgroundOpacity().getValue();
         double lineSpace = this.client.options.getChatLineSpacing().getValue();
         double lineHeight = 9.0 * (lineSpace + 1.0);
