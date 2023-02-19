@@ -61,9 +61,9 @@ public class PacketViewHelper {
                     } else if (ptype == Character.TYPE) {
                         value = Character.toString(field.getChar(packet));
                     } else if (ptype == Integer.TYPE) {
-                        value = Integer.toString(field.getShort(packet));
+                        value = Integer.toString(field.getInt(packet));
                     } else if (ptype == Long.TYPE) {
-                        value = field.getShort(packet)+"L";
+                        value = field.getLong(packet)+"L";
                     }
                 } else {
                     Object fieldValue = field.get(packet);
