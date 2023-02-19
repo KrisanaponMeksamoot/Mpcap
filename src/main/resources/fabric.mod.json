@@ -9,11 +9,11 @@
     "Krisanapon Meksamoot"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
+    "homepage": "https://github.com/KrisanaponMeksamoot",
     "sources": "https://github.com/KrisanaponMeksamoot/mpcap-fabric"
   },
 
-  "license": "Unlicense",
+  "license": "ARR",
   "icon": "assets/mpcap/icon.png",
 
   "environment": "*",
