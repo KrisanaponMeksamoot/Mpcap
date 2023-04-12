@@ -27,13 +27,13 @@ public class PacketsViewScreen extends Screen {
 
     @Override
     protected void init() {
-        this.addDrawableChild(new ButtonWidget(2, 2, 200, 20, CLEAR, button -> {
-            this.mpcap.packetHistory.clear();
-        }));
-        ButtonWidget record_toggle = new ButtonWidget(202, 2, 200, 20, this.mpcap.packetHistory.recording?DISABLE_RECORD:ENABLE_RECORD, button -> {
-            this.mpcap.packetHistory.recording = ! this.mpcap.packetHistory.recording;
-            button.setMessage(this.mpcap.packetHistory.recording?DISABLE_RECORD:ENABLE_RECORD);
-        });
+        PacketHistory history = this.mpcap.packetHistory;
+        this.addDrawableChild(new ButtonWidget.Builder(CLEAR, button -> history.clear())
+                .dimensions(2, 2, 200, 20).build());
+        ButtonWidget record_toggle = new ButtonWidget.Builder(history.recording ? DISABLE_RECORD : ENABLE_RECORD, button -> {
+            history.recording = !history.recording;
+            button.setMessage(history.recording ? DISABLE_RECORD : ENABLE_RECORD);
+        }).dimensions(202, 2, 200, 20).build();
         this.addDrawableChild(record_toggle);
     }
     

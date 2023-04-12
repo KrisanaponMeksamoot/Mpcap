@@ -19,7 +19,8 @@ import net.fabricmc.loader.api.MappingResolver;
 import net.kris.mpcap.Mpcap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
@@ -27,11 +28,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.GlobalPos;
-import net.minecraft.util.registry.RegistryKey;
 
 public class PacketViewHelper {
     protected static HashSet<Class<?>> rawStringShowableClasses = Sets.newHashSet(BlockPos.class,ChunkPos.class,ChunkSectionPos.class,GlobalPos.class,UUID.class,NbtCompound.class,ItemStack.class,BlockHitResult.class);
-    protected static HashSet<Class<?>> stringifiableClasses = Sets.newHashSet(String.class,Identifier.class,RegistryKey.class,Date.class,BitSet.class,Optional.class);
+    protected static HashSet<Class<?>> stringifiableClasses = Sets.newHashSet(String.class,Identifier.class, RegistryKey.class,Date.class,BitSet.class,Optional.class);
     protected static MappingResolver mappingResolver = FabricLoader.getInstance().getMappingResolver();
     protected static String namespace = mappingResolver.getNamespaces().contains("named")?"named":mappingResolver.getCurrentRuntimeNamespace();
     public static String stringView(Packet<?> packet) {

@@ -12,7 +12,7 @@ import net.kris.mpcap.event.ConnectEvent;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.NetworkState;
-import net.minecraft.network.Packet;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.PacketCallbacks;
 
 @Mixin(ClientConnection.class)
@@ -23,11 +23,11 @@ public abstract class ClientConnectionMixin {
     public void init(NetworkSide side, CallbackInfo info) {
         ConnectEvent.invoke(this.capHandler = new ClientConnectionHandler((ClientConnection)(Object)this));
     }
-    @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/Packet;)V",at = @At("TAIL"))
+    @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;)V",at = @At("TAIL"))
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet<?> packet, CallbackInfo info) {
         this.capHandler.invokeReceive(packet);
     }
-    @Inject(method = "sendInternal(Lnet/minecraft/network/Packet;Lnet/minecraft/network/PacketCallbacks;Lnet/minecraft/network/NetworkState;Lnet/minecraft/network/NetworkState;)V",at = @At(value = "TAIL"))
+    @Inject(method = "sendInternal(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;Lnet/minecraft/network/NetworkState;Lnet/minecraft/network/NetworkState;)V",at = @At(value = "TAIL"))
     private void sendInternal(Packet<?> packet, @Nullable PacketCallbacks callbacks, NetworkState packetState, NetworkState currentState, CallbackInfo info) {
         this.capHandler.invokeSend(packet);
     }

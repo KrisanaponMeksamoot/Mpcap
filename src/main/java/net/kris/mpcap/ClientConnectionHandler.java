@@ -8,7 +8,7 @@ import com.google.common.collect.Sets;
 import io.netty.channel.Channel;
 import net.kris.mpcap.mixin.ClientConnectionAccessor;
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.Packet;
+import net.minecraft.network.packet.Packet;
 
 public class ClientConnectionHandler {
     private ClientConnection connection;
